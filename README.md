@@ -1,46 +1,4 @@
-config.json
 
-{
-  "database": {
-    "server": "MPC000160599\\SQLEXPRESS",
-    "database": "FFMLOG",
-    "user": "sa",
-    "password": "Zuichi7777",
-    "driver": "ODBC Driver 17 for SQL Server",
-    "trust_server_certificate": true
-  },
-  "variables": {
-    "ship_l_class": "IMPORT",
-    "ship_m_class": "SHIP",
-    "ship_s_class": "NO",
-    "file_type_l_class": "IMPORT",
-    "file_type_m_class": "FILE_TYPE",
-    "file_type_s_class": "TYPE",
-    "unten_folder_l_class": "IMPORT",
-    "unten_folder_m_class": "TARGET_FOLDER",
-    "acm_folder_l_class": "IMPORT",
-    "acm_folder_m_class": "TARGET_FOLDER_ACM",
-    "ecm_folder_l_class": "IMPORT",
-    "ecm_folder_m_class": "TARGET_FOLDER_ECM"
-  },
-  "UNTEN": {
-    "encoding":"cp932",
-    "target_folder":"C:\\Users\\U399397\\Desktop\\ログデータ可視化サンプル\\ログデータ可視化サンプル\\kangaiTX\\unten",
-
-    "header_rows":6,
-    "data_start_row":7,
-    "datetime_col":1,
-
-    "analog_tag_rows":[2,3],
-    "digital_tag_rows":[2,3,4],
-
-    "unit_row":6,
-
-    "field_name":"value",
-    "tag1_name":"file_type",
-    "tag2_name":"sensor"
-  }
-}
 
 
 
