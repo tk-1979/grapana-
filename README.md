@@ -674,6 +674,60 @@ def run(
 
 
 
+変換.txt
+
+   Unnamed: 0           Unnamed: 1            Unnamed: 2                           Unnamed: 3                                          Unnamed: 4
+           項目 1つ目（FFMLOG CSVヘッダ取込）                   NaN                      2つ目（InfluxDB取込）                                                 NaN
+        ファイル名              main.py                   NaN                     influx_import.py                                                 NaN
+         主な目的       CSVヘッダ情報をDBへ登録                   NaN                   CSVデータをInfluxDBへ投入                                                 NaN
+         実行引数                   なし                   NaN                            UNTEN MGM                                                 NaN
+         設定読込        load_config()   modules/settings.py load_config() , load_import_config() modules/settings.py\n＊load_import_config()はこのファイル自身
+         DB接続   create_db_engine()         modules/db.py                   create_db_engine()                                       modules/db.py
+m_variables参照                   あり                   NaN                                   なし                                                 NaN
+      m_ffm参照                  間接的                   NaN                                 直接参照                                                 NaN
+      艦番号取得方法        get_ship_no() modules/repository.py               get_ship_no_by_ryaku()                               modules/repository.py
+  FILE_TYPE取得      get_file_type() modules/repository.py                                   なし                                                 NaN
+      単位マスタ取得                   なし                   NaN                      get_unit_dict()                               modules/repository.py
+      ヘッダ変換取得    dispatcher内の可能性あり                   NaN               get_header_tag_cache()                               modules/repository.py
+Measurement使用                   なし                   NaN                              あり（MGM）                                                 NaN
+   InfluxDB書込                   なし                   NaN                     write_influxdb()                                                 NaN
+        CSV読込          dispatcher側                   NaN                       process_file()                                                 NaN
+         最終処理                run() modules/dispatcher.py                       process_file()                                                 NaN
+
+
+
+
+
+変換（txt→csv）.py
+
+import pandas as pd
+from pathlib import Path
+
+excel_file = next(Path(".").glob("*.xlsx"))
+
+# すべて文字列として読込
+df = pd.read_excel(excel_file, dtype=str)
+
+# TXT出力
+df.to_csv("変換.txt", index=False)
+
+# CSV出力
+df.to_csv("変換.csv", index=False, encoding="utf-8-sig")
+
+print("変換.txt と 変換.csv を作成しました")
+
+
+
+
+
+
+
+
+         
+
+
+
+
 
 
 
