@@ -1,0 +1,56 @@
+C:\Users\U399397\Desktop\ログデータ可視化サンプル\ログデータ可視化サンプル\TMMS_HDDデータ\02_くまの\kangaiTX\unten\ETC
+
+にある　.csvファイルのグラフ化
+
+
+
+ヘッダー（HA、HB列）
+
+ETCフォルダ
+
+1号FC 積算運転時間	1号FC 起動回数
+
+
+-----------------------------------
+最新のデータ情報(ヘッダー)との差異を検知する
+→これはすでにある
+-----------------------------------
+
+
+1DE_Digital
+
+
+SELECT * FROM "MGM"
+WHERE "sensor" = '30001_321'
+OR "sensor" = '30001_322'
+OR "sensor" = '30001_335'
+
+
+正規表現（部分検索）
+
+SELECT * FROM "MGM"
+WHERE "sensor" =~ /^30001_/
+
+→表示不可能
+
+---------------------------------------
+
+
+SELECT value
+FROM "MGM"
+WHERE sensor='30001_321'
+
+
+
+SELECT value
+FROM "MGM"
+WHERE sensor='30001_322'
+
+
+
+
+
+
+
+
+
