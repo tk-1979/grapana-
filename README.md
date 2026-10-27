@@ -1,3 +1,52 @@
+クエリ学習
+
+折れ線（秒→分まとめ）
+
+SELECT
+    DATE_BIN(INTERVAL '1 minute', a.time, TIMESTAMP '1970-01-01') AS minute,
+    AVG(a.value) AS HTCWA,
+    AVG(b.value) AS HTCWB
+FROM "${Measurement}" a
+JOIN "${Measurement}" b
+    ON a.time = b.time
+WHERE a.sensor = '20001_27'
+  AND b.sensor = '20001_28'
+GROUP BY minute
+ORDER BY minute
+
+
+
+散布図
+
+SELECT a.value as val1,
+      b.value as val2,
+      13.85 as "Hight Limit",
+      13.75 as "Low Limit",
+      'actual' as series
+FROM "${Measurement}" as a
+ join "${Measurement}" as b
+on a.time = b.time
+WHERE a.sensor = '20001_92'  
+and b.sensor = '20001_93'
+--order by a.time
+
+
+散布図（秒→分まとめ）
+
+SELECT
+    DATE_BIN(INTERVAL '1 minute', a.time, TIMESTAMP '1970-01-01') AS minute,
+    AVG(a.value) AS val1,
+    AVG(b.value) AS val2,
+    13.85 AS "High Limit",
+    13.75 AS "Low Limit",
+    'actual' AS series
+FROM "${Measurement}" a
+JOIN "${Measurement}" b
+    ON a.time = b.time
+WHERE a.sensor = '20001_92'
+  AND b.sensor = '20001_93'
+GROUP BY minute
+ORDER BY minute
 
 
 
@@ -7,7 +56,7 @@
 
 
 
-
+-------------------------------------------------
 
 csv_reader_unten.py
 
