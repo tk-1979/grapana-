@@ -1,3 +1,149 @@
+
+from pathlib import Path
+import pyarrow.parquet as pq
+from pyiceberg.catalog.sql import SqlCatalog
+
+# =====================================
+# ① カレントディレクトリ
+# =====================================
+base_path = Path(".").resolve()
+
+# フォルダ設定
+parquet_dir = base_path / "PARQUET"
+iceberg_dir = base_path / "ICEBERG"
+warehouse_dir = iceberg_dir / "warehouse"
+
+# フォルダ作成
+warehouse_dir.mkdir(parents=True, exist_ok=True)
+
+# =====================================
+# ② Iceberg Catalog作成
+# =====================================
+catalog = SqlCatalog(
+    "local",
+    uri=f"sqlite:///{(iceberg_dir / 'catalog.db').as_posix()}",
+    warehouse=warehouse_dir.as_posix()
+)
+
+# 名前空間作成
+catalog.create_namespace_if_not_exists("test")
+
+# =====================================
+# ③ Parquetファイル一覧取得
+# =====================================
+parquet_files = sorted(parquet_dir.glob("*.parquet"))
+
+if not parquet_files:
+    raise FileNotFoundError("Parquetファイルがありません")
+
+print(f"Parquetファイル数: {len(parquet_files)}")
+
+# 最初のParquetから列構成を取得
+arrow_schema = pq.read_schema(parquet_files[0])
+
+# =====================================
+# ④ Icebergテーブル作成
+# =====================================
+table_name = "test.sensor_data"
+
+if catalog.table_exists(table_name):
+    table = catalog.load_table(table_name)
+    print("既存のIcebergテーブルを読み込みました")
+else:
+    table = catalog.create_table(
+        identifier=table_name,
+        schema=arrow_schema
+    )
+    print("Icebergテーブルを作成しました")
+
+# =====================================
+# ⑤ 登録済みファイルの確認
+# =====================================
+registered_files = {
+    task.file.file_path
+    for task in table.scan().plan_files()
+}
+
+# =====================================
+# ⑥ 未登録Parquetファイルを抽出
+# =====================================
+# Windowsのパス形式に対応
+new_files = [
+    p.resolve().as_posix()
+    for p in parquet_files
+    if p.resolve().as_posix() not in registered_files
+]
+
+# =====================================
+# ⑦ Icebergテーブルに登録
+# =====================================
+if new_files:
+    table.add_files(new_files)
+    print(f"新規登録ファイル数: {len(new_files)}")
+else:
+    print("新規登録するファイルはありません")
+
+# =====================================
+# ⑧ 登録結果確認
+# =====================================
+table.refresh()
+
+print("\n===== 登録結果 =====")
+print("テーブル名:", table.name())
+
+snapshot = table.current_snapshot()
+
+if snapshot:
+    print("Snapshot ID:", snapshot.snapshot_id)
+else:
+    print("Snapshotはまだありません")
+
+# 登録済みファイル数
+file_count = sum(1 for _ in table.scan().plan_files())
+print("登録済みParquetファイル数:", file_count)
+
+# =====================================
+# ⑨ データ確認（先頭10行）
+# =====================================
+print("\n===== データ確認 =====")
+
+result = table.scan(limit=10).to_arrow()
+print(result.to_pandas())
+
+print("\n処理完了")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 クエリ学習
 
 折れ線（秒→分まとめ）
